@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>茶香古道：大稻埕與淡蘭古道的歲月印記</title>
+    <!-- 引入 Google 字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- 引入 Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #FBF7EE;
+            --paper-color: #F4ECE1;
+            --text-main: #2C221E;
+            --text-muted: #5C4A42;
+            --brick-red: #8C2D19;
+            --amber-tea: #C87D55;
+            --dark-wood: #3A2618;
+            --card-bg: #FFFDF9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Noto Sans TC', sans-serif;
+            line-height: 1.8;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        h1, h2, h3, .serif-title {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        /* 飄落茶葉畫布樣式 */
+        #tea-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* 導覽列 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(251, 247, 238, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #E6D9C5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--brick-red);
+            letter-spacing: 2px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--brick-red);
+        }
+
+        /* Hero 視覺區塊 */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 1rem;
+            background: linear-gradient(rgba(251, 247, 238, 0.85), rgba(251, 247, 238, 0.85)), url('https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: var(--dark-wood);
+            margin-bottom: 1rem;
+            letter-spacing: 3px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--amber-tea);
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background-color: var(--brick-red);
+            color: #fff;
+            padding: 0.8rem 2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #6F2213;
+            transform: translateY(-2px);
+        }
+
+        /* 主要內容區塊共用樣式 */
+        section {
+            padding: 6rem 10% 4rem 10%;
+            border-bottom: 1px solid #EAE0D0;
+        }
+
+        section h2 {
+            font-size: 2.2rem;
+            color: var(--brick-red);
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--amber-tea);
+        }
+
+        .section-desc {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            max-width: 800px;
+        }
+
+        /* 重點一：淡蘭古道網格 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .text-block p {
+            margin-bottom: 1rem;
+        }
+
+        .img-placeholder {
+            background-color: var(--paper-color);
+            border: 2px dashed #D4C3AB;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--amber-tea);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        /* 重點三：經典茶種卡片 */
+        .tea-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .tea-card {
+            background-color: var(--card-bg);
+            border: 1px solid #E6D9C5;
+            padding: 2rem;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(44, 34, 30, 0.03);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .tea-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(44, 34, 30, 0.08);
+            border-color: var(--amber-tea);
+        }
+
+        .tea-card h3 {
+            color: var(--dark-wood);
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        .tea-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* 頁尾 */
+        footer {
+            text-align: center;
+            padding: 3rem;
+            background-color: var(--dark-wood);
+            color: #D4C3AB;
+            font-size: 0.9rem;
+        }
+
+        /* 響應式調整 */
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            nav ul {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 飄落茶葉容器 -->
+    <div id="tea-canvas"></div>
+
+    <!-- 導覽列 -->
+    <header>
+        <div class="logo">茶香古道</div>
+        <nav>
+            <ul>
+                <li><a href="#origin">淡蘭起源</a></li>
+                <li><a href="#dadaocheng">大稻埕繁榮</a></li>
+                <li><a href="#varieties">經典茶種</a></li>
+                <li><a href="#modern">現代轉型</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero 區塊 -->
+    <section class="hero">
+        <h1 class="hero-title">茶香古道：大稻埕與淡蘭古道</h1>
+        <p class="hero-desc">探索百年茶葉貿易的足跡，感受台灣早期躍上國際舞臺的芳香歲月。</p>
+        <a href="#origin" class="btn">展開探索</a>
+    </section>
+
+    <!-- 重點 1：起源與淡蘭古道 -->
+    <section id="origin" class="reveal-section">
+        <h2>1. 起源與淡蘭古道</h2>
+        <p class="section-desc">串聯北台灣山林的交通命脈，見證先民足跡與物資運輸的歷史路徑。</p>
+        <div class="grid-2">
+            <div class="text-block">
+                <p>淡蘭古道是清代時期由淡水廳（台北）通往噶瑪蘭廳（宜蘭）的重要交通網路。這條路徑不僅是官兵巡檢與移民開墾的必經之路，更是早期山區茶農將茶葉運往平地與港口輸出的大動脈。</p>
+                <p>透過石階、古橋與山徑，我們彷彿能聽見挑夫們行經山林時的足音，那是台灣早期對外經濟連結的起點。</p>
+            </div>
+            <div class="img-placeholder">淡蘭古道山林石階意象</div>
+        </div>
+    </section>
+
+    <!-- 重點 2：茶葉加工與大稻埕繁榮 -->
+    <section id="dadaocheng" class="reveal-section">
+        <h2>2. 茶葉加工與大稻埕繁榮</h2>
+        <p class="section-desc">從荒埔到全台第一大茶市，洋行林立與製茶產業創造的經濟奇蹟。</p>
+        <div class="grid-2">
+            <div class="img-placeholder">大稻埕洋行與茶行街景意象</div>
+            <div class="text-block">
+                <p>19世紀中葉後，隨著基隆河水運便利，大稻埕迅速成為台灣茶葉加工與出口的重鎮。茶商在此設立精製茶廠，將烏龍茶外銷歐美，讓「Formosa Tea」名揚國際。</p>
+                <p>繁盛的茶市吸引了英、美等外商洋行進駐，帶動了周邊南北貨、布業與中藥行的全面興起，奠定大稻埕百年的繁華基石。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 重點 3：經典茶種介紹 -->
+    <section id="varieties" class="reveal-section">
+        <h2>3. 經典茶種介紹</h2>
+        <p class="section-desc">品味歲月沈澱的風味，認識大稻埕揚名海外的代表性茶品。</p>
+        <div class="tea-cards">
+            <div class="tea-card">
+                <h3>福爾摩沙烏龍茶</h3>
+                <p>帶有天然果香與蜜香，口感溫潤回甘，是19世紀風靡歐美皇室的頂級茶品。</p>
+            </div>
+            <div class="tea-card">
+                <h3>文山包種茶</h3>
+                <p>清香雅致，帶有淡淡的花香，沖泡時茶湯清澈碧綠，展現北台灣山林的清新氣息。</p>
+            </div>
+            <div class="tea-card">
+                <h3>東方美人茶</h3>
+                <p>經小綠葉蟬叮咬後獨特發酵，帶有熟果香與天然蜜味，滋味層次極為豐富。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 重點 4：現代轉型與文化體驗 -->
+    <section id="modern" class="reveal-section">
+        <h2>4. 現代轉型與文化體驗</h2>
+        <p class="section-desc">當百年老街遇上文創設計，新舊交織的茶道美學與走讀風潮。</p>
+        <div class="grid-2">
+            <div class="text-block">
+                <p>今日的大稻埕不再只是傳統批發市場，而是融合了文創咖啡廳、老屋改造選物店與深度茶文化體驗的熱門場域。</p>
+                <p>透過文史走讀活動與品茶工作坊，年輕世代得以重新走入古道與老街，讓茶香在當代生活中延續新生命。</p>
+            </div>
+            <div class="img-placeholder">現代老屋茶館與文創意象</div>
+        </div>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer>
+        <p>&copy; 2026 茶香古道：大稻埕與淡蘭古道歷史. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Anime.js 動畫與互動控制碼 -->
+    <script>
+        // 1. 平滑滾動選單導覽
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 2. Anime.js 頁面載入標題淡入動畫
+        anime({
+            targets: '.hero-title, .hero-desc, .hero .btn',
+            opacity: [0, 1],
+            translateY: [30, 0],
+            delay: anime.stagger(200),
+            easing: 'easeOutQuad',
+            duration: 1000
+        });
+
+        // 3. 滾動區塊漸顯動畫 (Intersection Observer + Anime.js)
+        const observerOptions = {
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    anime({
+                        targets: entry.target,
+                        opacity: [0, 1],
+                        translateY: [40, 0],
+                        easing: 'easeOutQuad',
+                        duration: 800
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-section').forEach(section => {
+            section.style.opacity = '0';
+            observer.observe(section);
+        });
+
+        // 4. 動態生成飄落茶葉微動畫 (Anime.js)
+        const canvasContainer = document.getElementById('tea-canvas');
+        const leafCount = 12;
+
+        for (let i = 0; i < leafCount; i++) {
+            let leaf = document.createElement('div');
+            leaf.innerHTML = '🍃';
+            leaf.style.position = 'absolute';
+            leaf.style.left = Math.random() * window.innerWidth + 'px';
+            leaf.style.top = -50 + 'px';
+            leaf.style.fontSize = (Math.random() * 10 + 14) + 'px';
+            leaf.style.opacity = Math.random() * 0.5 + 0.3;
+            canvasContainer.appendChild(leaf);
+
+            animateLeaf(leaf);
+        }
+
+        function animateLeaf(el) {
+            anime({
+                targets: el,
+                translateY: window.innerHeight + 100,
+                translateX: function() {
+                    return anime.random(-150, 150);
+                },
+                rotate: function() {
+                    return anime.random(-360, 360);
+                },
+                duration: function() {
+                    return anime.random(8000, 15000);
+                },
+                easing: 'linear',
+                loop: true,
+                delay: function() {
+                    return anime.random(0, 5000);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
